@@ -33,7 +33,7 @@ push @ARGV, "-" unless @ARGV;
 
 for my $filename (@ARGV) {
    open my $file, "<$filename" or warn "$filename: $!\n" and next;
-   print ":"x32, "\n", "$filename\n", ":"x32, "\n" if $opts{'m'};
+   print ":"x32, "\n", "$filename\n", ":"x32, "\n" if $opts{'n'};
    while (defined (my $line = <$file>)) {
       chomp $line;
       printf "%6d  ", $. if $opts{'n'};
