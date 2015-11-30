@@ -4,18 +4,17 @@
 
 #
 # NAME
-#    cat.perl - cat files to the terminal
+#   pmake - cat files to the terminal
 #
 # SYNOPSIS
-#    cat.perl [-nm] [filename...]
+#    pmake [-d] [-n] [-f makefile] [target]
 #
 # DESCRIPTION
 #    Cat files to the terminal.  If no files are given, cat STDIN.
 #
 # OPTIONS
-#    -n  Number each line for output.
-#    -m  Print titles in the style of more(1).
-#
+# -d 
+# -n
 
 use strict;
 use warnings;
@@ -28,7 +27,7 @@ $SIG{__WARN__} = sub {print STDERR "$0: @_"; $status = 1};
 $SIG{__DIE__} = sub {warn @_; $status = 1; exit};
 
 my %opts;
-getopts "nm", \%opts;
+getopts('dnf:', \%opts);
 
 push @ARGV, "-" unless @ARGV;
 
