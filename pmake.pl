@@ -1,5 +1,6 @@
-#tfutral lshepher
 #!/usr/bin/perl
+# Luke Shepherd lshepher@ucsc.edu 
+# Taylor Futral tfutral@ucsc.edu
 # $Id: cat.perl,v 1.1 2014-10-13 14:16:07-07 - - $
 
 #
@@ -29,6 +30,10 @@ $SIG{__DIE__} = sub {warn @_; $status = 1; exit};
 my %opts;
 getopts('dnf:', \%opts);
 
+if($opts{f}) { print "$opts{f}\n";}
+if($opts{n}) { print "$opts{n}\n";}
+
+=pod
 my @inputs = (
    "all : hello",
    "hello : main.o hello.o",
@@ -66,8 +71,10 @@ for my $target (keys %graph) {
    }
    print "\n";
 }
-
+=cut
 push @ARGV, "-" unless @ARGV;
+
+if(scalar(@ARGV) > 1) {exit}
 
 for my $filename (@ARGV) {
    open my $file, "<$filename" or warn "$filename: $!\n" and next;
