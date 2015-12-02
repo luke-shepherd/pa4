@@ -1,0 +1,48 @@
+head	1.1;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.1
+date	2011.03.25.00.24.59;	author -;	state -;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@-
+@
+text
+@# $Id: Makefile,v 1.1 2008-11-25 18:18:39-08 - - $
+
+all : hello
+
+hello : main.o hello.o
+	cc main.o hello.o -o hello
+
+main.o : main.c hello.h
+	cc -c main.c
+
+hello.o : hello.c hello.h
+	cc -c hello.c
+
+ci : Makefile main.c hello.c hello.h
+	cid Makefile main.c hello.c hello.h
+
+test : hello
+	./hello
+
+clean : 
+	- rm hello.o main.o
+
+spotless : clean
+	- rm hello
+
+@

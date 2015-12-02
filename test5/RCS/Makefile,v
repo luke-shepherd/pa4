@@ -1,0 +1,57 @@
+head	1.1;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.1
+date	2011.03.25.00.23.13;	author -;	state -;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@-
+@
+text
+@# $Id: Makefile,v 1.1 2008-11-25 18:05:57-08 - - $
+
+MKFILE     = Makefile
+JAVASRC    = queue.java qtest.java
+CLASSES    = queue.class qtest.class
+JARCLASSES = ${CLASSES} queue\$$emptyexn.class queue\$$node.class
+JARFILE    = qtest
+MAINCLASS  = qtest
+SOURCES    = ${JAVASRC} ${MKFILE}
+
+all : ${JARFILE}
+
+${JARFILE} : ${CLASSES}
+	echo Main-class: ${MAINCLASS} >Manifest
+	jar cvfm ${JARFILE} Manifest ${JARCLASSES}
+	chmod +x ${JARFILE}
+	- rm Manifest
+
+%.class : %.java
+	cid + $<
+	javac $<
+
+clean :
+	- rm ${JARCLASSES}
+
+spotless : clean
+	- rm ${JARFILE}
+
+ci : ${SOURCES}
+	cid + ${SOURCES}
+
+test : ${JARFILE}
+	./${JARFILE} * | cat -n
+
+@

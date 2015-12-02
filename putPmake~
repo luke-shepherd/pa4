@@ -1,0 +1,10 @@
+#!/bin/sh
+cp pmake ./test0
+cp pmake ./test1
+cp pmake ./test2
+cp pmake ./test3
+cp pmake ./test4
+cp pmake ./test5
+cp pmake ./test6
+cp pmake ./test7
+

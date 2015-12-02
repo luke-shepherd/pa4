@@ -65,11 +65,8 @@ for my $target (keys %graph) {
 
 my %macros;
 my $makefile;
-<<<<<<< Updated upstream
 my %deps; #key is target and val is array of deps
 my $targ_commands; #key is target and val is array of commands
-=======
->>>>>>> Stashed changes
 my $targ_table = {};
 
 sub parse_dep ($) {
@@ -79,7 +76,6 @@ sub parse_dep ($) {
    my @dependencies = split m/\s+/, $dependency;
    return $target, \@dependencies;
 }
-<<<<<<< Updated upstream
 
 
 if(scalar(@ARGV) > 1) {
@@ -89,22 +85,6 @@ if(scalar(@ARGV) > 1) {
 
 #print "$ARGV[0]\n";
 
-=======
-
-sub mtime ($) {
-    my ($filename) = @_;
-    my @stat = stat $filename;
-    return @stat ? $stat[9] : undef;
-}
-
-if(scalar(@ARGV) > 1) {
-   print STDERR "$0: Too many args\n";
-   exit 1;
-}
-
-#print "$ARGV[0]\n";
-
->>>>>>> Stashed changes
 if($opts{f}) {
    open $makefile, "<$opts{f}" or die "\"$opts{f}\": No such file";
 } else {
@@ -112,10 +92,6 @@ if($opts{f}) {
 }
 
 my $currTarget;
-<<<<<<< Updated upstream
-=======
-my $firstTarget;
->>>>>>> Stashed changes
 
 #fill hashes
 while (defined (my $line = <$makefile>)) {
@@ -130,36 +106,21 @@ while (defined (my $line = <$makefile>)) {
       my ($target, $deps) = parse_dep $line;
       my $table_entry = {PREREQ => $deps, CMDS => []}; 
       $targ_table->{$target} = $table_entry;
-<<<<<<< Updated upstream
-=======
-      unless(defined $firstTarget){$firstTarget = $target}
->>>>>>> Stashed changes
       $currTarget = $target;
    }
    elsif ($line =~ m/^\t(.+)\s*$/) {
       if (defined $currTarget) {
          my $table_entry = $targ_table->{$currTarget};
          my ($cmd) = ($1);
-<<<<<<< Updated upstream
-	 my $currcmds = $table_entry->{CMDS};
-	 push @$currcmds, $cmd;
-	 # $targ_commands->{$currTarget} = @currcmds;
-	 #print "command $cmd\n";
-=======
     my $currcmds = $table_entry->{CMDS};
     push @$currcmds, $cmd;
     # $targ_commands->{$currTarget} = @currcmds;
     #print "command $cmd\n";
->>>>>>> Stashed changes
       }
       else {
          warn "line $.: Undefined commands";
       }
-<<<<<<< Updated upstream
-   }   	  
-=======
    }       
->>>>>>> Stashed changes
    # if (defined $currTarget) {print "current target is $currTarget\n"};
 }
 
@@ -180,36 +141,13 @@ while (my ($target, $entry) = each(%$targ_table)) {
    if(not @$cmnds) {print "--No commands\n"}
    else { for my $cmd (@$cmnds) {print "+- $cmd\n"}}
  
-<<<<<<< Updated upstream
 }
 }
-=======
-}
-}
->>>>>>> Stashed changes
 if($opts{n}) {
    print "$opts{n}\n";
 }
 
 #get target from cmdline, use to run/print commands
-<<<<<<< Updated upstream
-=======
-my $inputTarget;
-if(@ARGV){
-    $inputTarget = $ARGV[0];
-}else{
-    $inputTarget = $firstTarget;
-}
-
-my $checkTarget;
-if(defined $targ_table->{$inputTarget}){
-    $checkTarget = $targ_table->{$inputTarget};
-}else{
-    print"error: no such target";
-    exit 1;
-}
-
->>>>>>> Stashed changes
 
 
 #open $file, "<$ARGV[0]" or warn "$ARG: $!\n" and next;

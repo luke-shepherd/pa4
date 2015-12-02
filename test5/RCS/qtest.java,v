@@ -1,0 +1,37 @@
+head	1.1;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.1
+date	2011.03.25.00.23.13;	author -;	state -;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@-
+@
+text
+@// $Id: qtest.java,v 1.1 2008-11-25 18:05:57-08 - - $
+
+import static java.lang.System.*;
+
+class qtest {
+
+   public static void main (String[] args) {
+      queue<String> queue = new queue<String> ();
+      for (String arg : args) queue.insert (arg);
+      while (! queue.empty ()) out.println (queue.remove ());
+   };
+
+};
+
+@

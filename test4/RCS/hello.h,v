@@ -1,0 +1,32 @@
+head	1.1;
+access;
+symbols;
+locks;
+comment	@ * @;
+
+
+1.1
+date	2011.03.25.00.23.58;	author -;	state -;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@-
+@
+text
+@// $Id: hello.h,v 1.2 2008-11-25 18:17:04-08 - - $
+
+#ifndef __HELLO_H__
+#define __HELLO_H__
+
+void hello (void);
+
+#endif
+
+@

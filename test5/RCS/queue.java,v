@@ -1,0 +1,76 @@
+head	1.2;
+access;
+symbols;
+locks;
+comment	@# @;
+
+
+1.2
+date	2011.12.16.02.15.36;	author -;	state -;
+branches;
+next	1.1;
+
+1.1
+date	2011.03.25.00.23.13;	author -;	state -;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@-
+@
+text
+@// $Id: queue.java,v 1.1 2011-03-24 17:23:13-07 - - $
+
+class queue<item_t> {
+   static class emptyexn extends RuntimeException {};
+
+   class node {
+      item_t item;
+      node link;
+   };
+
+   node head = null;
+   node last = null;
+
+   boolean empty () {
+      return head == null;
+   };
+
+   void insert (item_t item) {
+      node newnode = new node ();
+      newnode.item = item;
+      if (head == null) head = newnode;
+                   else last.link = newnode;
+      last = newnode;
+   };
+
+   item_t remove () {
+      if (empty ()) throw new emptyexn ();
+      item_t result = head.item;
+      head = head.link;
+      if (head == null) last = null;
+      return result;
+   };
+
+};
+@
+
+
+1.1
+log
+@-
+@
+text
+@d1 1
+a1 1
+// $Id: queue.java,v 1.1 2008-11-25 18:05:57-08 - - $
+d4 1
+a4 1
+   class emptyexn extends RuntimeException {};
+@

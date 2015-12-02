@@ -1,0 +1,10 @@
+#!/bin/sh
+cp pmake.pl ./test0
+cp pmake.pl ./test1
+cp pmake.pl ./test2
+cp pmake.pl ./test3
+cp pmake.pl ./test4
+cp pmake.pl ./test5
+cp pmake.pl ./test6
+cp pmake.pl ./test7
+
