@@ -1,5 +1,6 @@
-#tfutral lshepher
 #!/usr/bin/perl
+# Luke Shepherd lshepher@ucsc.edu 
+# Taylor Futral tfutral@ucsc.edu
 # $Id: cat.perl,v 1.1 2014-10-13 14:16:07-07 - - $
 
 #
@@ -29,6 +30,7 @@ $SIG{__DIE__} = sub {warn @_; $status = 1; exit};
 my %opts;
 getopts('dnf:', \%opts);
 
+=pod
 my @inputs = (
    "all : hello",
    "hello : main.o hello.o",
@@ -39,15 +41,8 @@ my @inputs = (
    "clean : ",
    "spotless : clean",
 );
-
-sub parse_dep ($) {
-   my ($line) = @_;
-   return undef unless $line =~ m/^(\S+)\s*:\s*(.*?)\s*$/;
-   my ($target, $dependency) = ($1, $2);
-   my @dependencies = split m/\s+/, $dependency;
-   return $target, \@dependencies;
-}
-
+=cut
+=pod
 my %graph;
 for my $input (@inputs) {
    my ($target, $deps) = parse_dep $input;
@@ -66,16 +61,78 @@ for my $target (keys %graph) {
    }
    print "\n";
 }
+=cut
+#push @ARGV, "-" unless @ARGV;
 
-push @ARGV, "-" unless @ARGV;
+my %macros = ();
+my $makefile = ();
+my %deps = (); #key is target and val is array of deps
+my %targ_commands = (); #key is target and val is array of commands
 
-for my $filename (@ARGV) {
-   open my $file, "<$filename" or warn "$filename: $!\n" and next;
-   print ":"x32, "\n", "$filename\n", ":"x32, "\n" if $opts{'n'};
-   while (defined (my $line = <$file>)) {
-      chomp $line;
-      printf "%6d  ", $. if $opts{'n'};
-      printf "%s\n", $line;
-   }
-   close $file;
+sub parse_dep ($) {
+   my ($line) = @_;
+   return undef unless $line =~ m/^(\S+)\s*:\s*(.*?)\s*$/; #^ starts the string and $ ends it
+   my ($target, $dependency) = ($1, $2); #$1 is between first paren and $2 second
+   my @dependencies = split m/\s+/, $dependency;
+   return $target, \@dependencies;
 }
+
+
+if(scalar(@ARGV) > 1) {
+   print STDERR "$0: Too many args\n";
+   exit 1;
+}
+
+#print "$ARGV[0]\n";
+
+if($opts{f}) {
+   open $makefile, "<$opts{f}" or die "\"$opts{f}\": No such file";
+} else {
+   open $makefile, "<Makefile" or die "No Makefile";
+}
+
+my $currTarget;
+
+#fill hashes
+while (defined (my $line = <$makefile>)) {
+   if ($line =~ m/^(#.*)$/) { print $line }
+
+   elsif ($line =~ m/^(\S+)\s*=\s*(.*?)\s*$/) {
+      my ($macro, $value) = ($1, $2);
+      $macros{$macro} = $value;
+      #print "found macro $macro with value $value\n";
+   }
+   elsif ($line =~ m/^(\S+)\s*:\s*(.*?)\s*$/) {
+      my ($target, $deps) = parse_dep $line;
+      $deps{$target} = $deps;
+      $currTarget = $target;
+   }
+   elsif ($line =~ m/^\t(\S+)$/) {
+      if (defined $currTarget) {
+         my @currcmds = $targ_commands{$currTarget};
+         my $cmd = $1;
+	 if(@currcmds) {
+	    push (@currcmds, $cmd);
+            $targ_commands{$currTarget} = @currcmds;
+         } else {
+            my @currcmd;
+	    push (@currcmd, $cmd);
+	    $targ_commands{$currTarget} = @currcmd;
+	 }
+      }
+      else {
+         warn "line $.: Undefined commands";
+      }
+   }   	  
+   if (defined $currTarget) {print "current target is $currTarget\n"};
+}
+
+
+
+if($opts{n}) {
+   print "$opts{n}\n";
+}
+
+
+#open $file, "<$ARGV[0]" or warn "$ARG: $!\n" and next;
+#close $file;
