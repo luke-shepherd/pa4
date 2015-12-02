@@ -64,10 +64,11 @@ for my $target (keys %graph) {
 =cut
 #push @ARGV, "-" unless @ARGV;
 
-my %macros = ();
-my $makefile = ();
-my %deps = (); #key is target and val is array of deps
-my %targ_commands = (); #key is target and val is array of commands
+my %macros;
+my $makefile;
+my %deps; #key is target and val is array of deps
+my $targ_commands; #key is target and val is array of commands
+my $targ_table = {};
 
 sub parse_dep ($) {
    my ($line) = @_;
@@ -95,7 +96,7 @@ my $currTarget;
 
 #fill hashes
 while (defined (my $line = <$makefile>)) {
-   if ($line =~ m/^(#.*)$/) { print $line }
+   if ($line =~ m/^(#.*)$/) {}
 
    elsif ($line =~ m/^(\S+)\s*=\s*(.*?)\s*$/) {
       my ($macro, $value) = ($1, $2);
@@ -104,34 +105,50 @@ while (defined (my $line = <$makefile>)) {
    }
    elsif ($line =~ m/^(\S+)\s*:\s*(.*?)\s*$/) {
       my ($target, $deps) = parse_dep $line;
-      $deps{$target} = $deps;
+      my $table_entry = {PREREQ => $deps, CMDS => []}; 
+      $targ_table->{$target} = $table_entry;
       $currTarget = $target;
    }
-   elsif ($line =~ m/^\t(\S+)$/) {
+   elsif ($line =~ m/^\t(.+)\s*$/) {
       if (defined $currTarget) {
-         my @currcmds = $targ_commands{$currTarget};
-         my $cmd = $1;
-	 if(@currcmds) {
-	    push (@currcmds, $cmd);
-            $targ_commands{$currTarget} = @currcmds;
-         } else {
-            my @currcmd;
-	    push (@currcmd, $cmd);
-	    $targ_commands{$currTarget} = @currcmd;
-	 }
+         my $table_entry = $targ_table->{$currTarget};
+         my ($cmd) = ($1);
+	 my $currcmds = $table_entry->{CMDS};
+	 push @$currcmds, $cmd;
+	 # $targ_commands->{$currTarget} = @currcmds;
+	 #print "command $cmd\n";
       }
       else {
          warn "line $.: Undefined commands";
       }
    }   	  
-   if (defined $currTarget) {print "current target is $currTarget\n"};
+   # if (defined $currTarget) {print "current target is $currTarget\n"};
 }
 
+#print tables
+if($opts{d}) { 
+for my $mac (keys %macros) {
+   print "MACRO $mac = VAL $macros{$mac}\n";
+}
 
+while (my ($target, $entry) = each(%$targ_table)) {
+   print "TARGET $target depends on:"; 
+   my $deps = $entry->{PREREQ};
+   if(not @$deps) {print " no dependencies"}
+   else { for my $dep (@$deps) {print " $dep"}}
+   print "\n";
 
+   my $cmnds = $entry->{CMDS};
+   if(not @$cmnds) {print "--No commands\n"}
+   else { for my $cmd (@$cmnds) {print "+- $cmd\n"}}
+ 
+}
+}
 if($opts{n}) {
    print "$opts{n}\n";
 }
+
+#get target from cmdline, use to run/print commands
 
 
 #open $file, "<$ARGV[0]" or warn "$ARG: $!\n" and next;
